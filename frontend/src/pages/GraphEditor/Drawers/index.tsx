@@ -2,6 +2,7 @@ import { useContext } from 'react';
 
 import { DrawerName, editor } from '../Editor';
 import { ChooseNodeDrawer } from './ChooseNode/ChooseNode';
+import { insertStartData } from './InsertData/InsertData';
 
 export type CommonDrawerProps = {
   id?: string;
@@ -9,7 +10,8 @@ export type CommonDrawerProps = {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const drawers = {
-  [DrawerName.newNode]: ChooseNodeDrawer
+  [DrawerName.newNode]: ChooseNodeDrawer,
+  [DrawerName.insertStartData]: insertStartData,
 } satisfies Record<DrawerName, (props: never) => JSX.Element>;
 
 export const CurrentDrawer = () => {

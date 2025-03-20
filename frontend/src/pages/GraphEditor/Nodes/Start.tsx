@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { Handle, NodeProps, Position } from "reactflow";
 import { NodeWrapper } from "./NodeWrapper";
+import { DrawerName, editor } from "../Editor";
 
 type StartNodeData = {
   width: number;
@@ -7,6 +9,7 @@ type StartNodeData = {
 };
 
 export function StartNode({ data }: NodeProps<StartNodeData>) {
+  const { showDrawer } = useContext(editor);
   return (
     <NodeWrapper>
       <div
@@ -15,6 +18,7 @@ export function StartNode({ data }: NodeProps<StartNodeData>) {
           width: data.width,
           height: data.height,
         }}
+        onClick={() => showDrawer(DrawerName.insertStartData, { id: "source" })}
       >
         <p className="font-medium">{"Start"}</p>
         <Handle
