@@ -8,6 +8,7 @@ import { GraphProvider, graph } from "./Graph";
 import { allNodes } from "./Nodes";
 import { generateEdge, generateNode } from "./nodeGeneration";
 import { positionNodes } from "./positionNodes";
+import { SaveDecisionTree } from "./SaveDecisionTree";
 
 const edgeTypes = {
   "add-node": AddNodeEdge,
@@ -88,6 +89,7 @@ function ReactFlowSandbox() {
 export function GraphEditor() {
   return (
     <EditorProvider>
+      <SaveDecisionTree />
       <GraphProvider>
         <ReactFlowSandbox />
       </GraphProvider>
