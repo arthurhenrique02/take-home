@@ -44,6 +44,16 @@ export function AddNodeEdge({
     });
   };
 
+  if (label === "Decision") {
+    return (
+      <BaseEdge
+        path={edgePath}
+        markerEnd={markerEnd}
+        style={{ pointerEvents: "none", strokeWidth: 2 }}
+      />
+    );
+  }
+
   return (
     <>
       <BaseEdge

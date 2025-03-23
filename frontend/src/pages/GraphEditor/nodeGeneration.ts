@@ -82,6 +82,44 @@ export function insertNodeAfterEdge<SelectedNodeName extends NodeName>({
       returnEdges = [...updatedExistingEdges, ...newEdges];
       break;
     }
+    case "decision": {
+      // Check if the target node of the edge is an "end" node
+      const targetNode = nodes.find((n) => n.id === edge.target);
+
+      if (!(targetNode!.type === "end")) {
+        addedNode = {};
+        returnNodes = nodes;
+        returnEdges = edges;
+        break
+      }
+      const newDecisionNode = generateNode({
+        nodeName: "decision",
+        data: {
+          label: "",
+        },
+      });
+
+      const newEdges = [
+        generateEdge({
+          source: edge.source,
+          target: newDecisionNode.id,
+          label: edge.label,
+        }),
+        generateEdge({
+          source: newDecisionNode.id,
+          target: edge.target,
+          label: "Decision",
+        }),
+      ];
+
+      const updatedExistingEdges = edges.filter((e) => e.id !== edge.id);
+
+      const newNodes = [newDecisionNode];
+      addedNode = newDecisionNode;
+      returnNodes = [...nodes, ...newNodes];
+      returnEdges = [...updatedExistingEdges, ...newEdges];
+      break;
+    }
   }
 
   return {
@@ -153,6 +191,11 @@ export function getNodeDimensions(nodeName: NodeName) {
       return {
         width: 8 * gridUnitSize,
         height: 5 * gridUnitSize,
+      };
+    case "decision":
+      return {
+        width: 8 * gridUnitSize,
+        height: 4 * gridUnitSize,
       };
     default:
       return {

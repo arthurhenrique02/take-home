@@ -1,4 +1,5 @@
 import { DiamondSvg } from "assets/Diamond";
+import { RectangleSvg } from "assets/Rectangle";
 import { Drawer } from "components/Drawer";
 import { editor } from "@src/pages/GraphEditor/Editor";
 import { ReactNode, useContext } from "react";
@@ -43,6 +44,14 @@ export const ChooseNodeDrawer = ({
               }
               label="Conditional"
               onClick={() => onButtonClick("conditional")}
+            />
+
+            <ChooseNodeButton
+              preview={
+                <RectangleSvg className="h-12 w-20 stroke-4 stroke-Y-350 text-Y-300" />
+              }
+              label="Decision"
+              onClick={() => onButtonClick("decision")}
             />
           </div>
         </>
