@@ -1,6 +1,8 @@
 import { DiamondSvg } from "assets/Diamond";
 import { Handle, NodeProps, Position } from "reactflow";
 import { NodeWrapper } from "./NodeWrapper";
+import { DrawerName, editor } from "../Editor";
+import { useContext } from "react";
 
 export type ConditionalNodeData = {
   label: string;
@@ -9,7 +11,8 @@ export type ConditionalNodeData = {
   height: number;
 };
 
-export function ConditionalNode({ data }: NodeProps<ConditionalNodeData>) {
+export function ConditionalNode({ id, data }: NodeProps<ConditionalNodeData>) {
+  const { showDrawer } = useContext(editor);
   return (
     <NodeWrapper>
       <div
@@ -22,6 +25,7 @@ export function ConditionalNode({ data }: NodeProps<ConditionalNodeData>) {
         <div className="p-9 flex items-center justify-center text-[12px] text-center w-full h-full relative">
           <div
             className={`group-hover-focus:cursor-pointer absolute left-0 top-0 w-full h-full text-Y-300 [&>svg]:stroke-Y-600 group-hover:text-Y-350 z-0`}
+            onClick={() => showDrawer(DrawerName.insertConditionalData, { id: id, data: data })}
           >
             <DiamondSvg strokeWidth={4} />
           </div>

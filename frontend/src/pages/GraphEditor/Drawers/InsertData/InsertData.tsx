@@ -2,14 +2,24 @@ import { Drawer } from "components/Drawer";
 import { editor } from "@src/pages/GraphEditor/Editor";
 import { useContext, useState,  } from "react";
 import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/20/solid";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { NodeProps } from "reactflow";
+import { ConditionalNodeData } from "../../Nodes/Conditional";
+import { graph } from "../../Graph";
 
 
 type Field = {
   name: string;
   value: string;
 };
+
+type ConditionalField = {
+  first_value: string;
+  second_value: string;
+  condition: ">" | "<" | "=" | ">=" | "<=";
+}
+
 
 export const insertStartData = () => {
   const { drawerVisible, closeEditorDrawer } = useContext(editor);
@@ -37,8 +47,6 @@ export const insertStartData = () => {
   const handleSave = () => {
     localStorage.setItem("fields", JSON.stringify(fields.filter((field) => field.name && field.value)));
     toast.error("Fields saved successfully!");
-
-    console.log(toast)
   };
 
   return (
@@ -79,6 +87,78 @@ export const insertStartData = () => {
                 </div>
             </div>
             </div>
+        }
+        onClose={closeEditorDrawer}
+        visible={drawerVisible}
+        />
+    </>
+  );
+};
+
+export const insertConditionalData = (
+  node: NodeProps<ConditionalNodeData>
+) => {
+  const { drawerVisible, closeEditorDrawer } = useContext(editor);
+  const { nodes, setNodes } = useContext(graph);
+  const [field, setField] = useState<ConditionalField>({ first_value: "", second_value: "", condition: ">" });
+
+  // check fields data, find node from id, and update node label (dont save in local storage)
+  const handleFieldChange = (key: keyof ConditionalField, value: string) => {
+    setField({ ...field, [key]: value });
+  };
+
+  const handleSave = () => {
+    const nodeToUpdate = nodes.find((n) => n.id === node.id);
+
+    if (!nodeToUpdate || !field.first_value || !field.second_value) {
+      toast.error("Please fill all fields!");
+      return
+    }
+
+    nodeToUpdate.data.label = `${field.first_value} ${field.condition} ${field.second_value}`;
+
+    setNodes([...nodes]);
+    closeEditorDrawer();
+  };
+
+  return (
+    <>
+        <Drawer
+        title="Insert data"
+        content={
+            <div className="p-4">
+              <div className="grid gap-6 mb-6 md:grid-cols-3">
+                <input
+                    type="text"
+                    placeholder="1st value"
+                    value={field.first_value}
+                    onChange={(e) => handleFieldChange("first_value", e.target.value)}
+                    className="bg-stone-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+                <select
+                    className="bg-stone-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                    <option value=">">{'>'}</option>
+                    <option value="<">{'<'}</option>
+                    <option value="=">{'='}</option>
+                    <option value=">=">{'>='}</option>
+                    <option value="<=">{'<='}</option>
+                </select>
+
+                <input
+                    type="text"
+                    placeholder="2nd value"
+                    value={field.second_value}
+                    onChange={(e) => handleFieldChange("second_value", e.target.value)}
+                    className="bg-stone-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              </div>
+            <div className="flex justify-between">
+                <button onClick={handleSave} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                    Save
+                </button>
+            </div>
+          </div>
         }
         onClose={closeEditorDrawer}
         visible={drawerVisible}

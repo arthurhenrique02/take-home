@@ -5,7 +5,9 @@ import { CommonDrawerProps, drawers } from "./Drawers";
 
 export enum DrawerName {
   newNode,
-  insertStartData
+  insertStartData,
+  insertConditionalData,
+  insertEndData,
 }
 
 export type Editor = {
