@@ -7,7 +7,7 @@ export enum DrawerName {
   newNode,
   insertStartData,
   insertConditionalData,
-  insertEndData,
+  insertDecisionData,
 }
 
 export type Editor = {

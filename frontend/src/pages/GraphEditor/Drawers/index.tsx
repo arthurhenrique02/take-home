@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import { DrawerName, editor } from '../Editor';
 import { ChooseNodeDrawer } from './ChooseNode/ChooseNode';
-import { insertConditionalData, insertStartData } from './InsertData/InsertData';
+import { insertConditionalData, insertDecisionData, insertStartData } from './InsertData/InsertData';
 
 export type CommonDrawerProps = {
   id?: string;
@@ -13,7 +13,7 @@ export const drawers = {
   [DrawerName.newNode]: ChooseNodeDrawer,
   [DrawerName.insertStartData]: insertStartData,
   [DrawerName.insertConditionalData]: insertConditionalData,
-  [DrawerName.insertEndData]: insertStartData,
+  [DrawerName.insertDecisionData]: insertDecisionData,
 } satisfies Record<DrawerName, (props: never) => JSX.Element>;
 
 export const CurrentDrawer = () => {

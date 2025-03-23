@@ -1,12 +1,13 @@
 import { Drawer } from "components/Drawer";
 import { editor } from "@src/pages/GraphEditor/Editor";
-import { useContext, useState,  } from "react";
+import { useContext, useEffect, useState,  } from "react";
 import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { NodeProps } from "reactflow";
 import { ConditionalNodeData } from "../../Nodes/Conditional";
 import { graph } from "../../Graph";
+import { DecisionNodeData } from "../../Nodes/Decision";
 
 
 type Field = {
@@ -20,6 +21,9 @@ type ConditionalField = {
   condition: ">" | "<" | "=" | ">=" | "<=";
 }
 
+type DecisionField = {
+  decision: string;
+}
 
 export const insertStartData = () => {
   const { drawerVisible, closeEditorDrawer } = useContext(editor);
@@ -102,6 +106,16 @@ export const insertConditionalData = (
   const { nodes, setNodes } = useContext(graph);
   const [field, setField] = useState<ConditionalField>({ first_value: "", second_value: "", condition: ">" });
 
+  useEffect(() => {
+    const nodeToUpdate = nodes.find((n) => n.id === node.id);
+    if (nodeToUpdate) {
+      if (!node.data.label) return;
+
+      const [first_value, condition, second_value] = node.data.label.split(" ");
+      setField({ first_value, condition: condition as ">" | "<" | "=" | ">=" | "<=", second_value });
+    }
+  }, [node, nodes]);
+
   // check fields data, find node from id, and update node label (dont save in local storage)
   const handleFieldChange = (key: keyof ConditionalField, value: string) => {
     setField({ ...field, [key]: value });
@@ -150,6 +164,66 @@ export const insertConditionalData = (
                     placeholder="2nd value"
                     value={field.second_value}
                     onChange={(e) => handleFieldChange("second_value", e.target.value)}
+                    className="bg-stone-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                />
+              </div>
+            <div className="flex justify-between">
+                <button onClick={handleSave} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                    Save
+                </button>
+            </div>
+          </div>
+        }
+        onClose={closeEditorDrawer}
+        visible={drawerVisible}
+        />
+    </>
+  );
+};
+
+export const insertDecisionData = (
+  node: NodeProps<DecisionNodeData>
+) => {
+  const { drawerVisible, closeEditorDrawer } = useContext(editor);
+  const { nodes, setNodes } = useContext(graph);
+  const [field, setField] = useState<DecisionField>({decision: ""});
+
+  useEffect(() => {
+    const nodeToUpdate = nodes.find((n) => n.id === node.id);
+    if (nodeToUpdate) {
+      setField({ decision: nodeToUpdate.data.label });
+    }
+  }, [node.id, nodes]);
+
+
+  // check fields data, find node from id, and update node label (dont save in local storage)
+  const handleFieldChange = (key: keyof DecisionField, value: string) => {
+    setField({ ...field, [key]: value });
+  };
+
+  const handleSave = () => {
+    const nodeToUpdate = nodes.find((n) => n.id === node.id);
+
+    if (!nodeToUpdate) {
+      toast.error("Node not found!");
+      return
+    }
+    nodeToUpdate.data.label = field.decision;
+    setNodes([...nodes]);
+    closeEditorDrawer();
+  };
+
+  return (
+    <>
+        <Drawer
+        title="Insert data"
+        content={
+            <div className="p-4">
+              <div className="grid gap-6 mb-6">
+                <textarea
+                    placeholder="Decision"
+                    value={field.decision}
+                    onChange={(e) => handleFieldChange("decision", e.target.value)}
                     className="bg-stone-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
               </div>
