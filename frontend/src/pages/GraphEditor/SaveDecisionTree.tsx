@@ -3,7 +3,6 @@ import { graph } from "./Graph";
 import axios from "axios";
 import { Edge, Node } from "reactflow";
 
-type Visited = { [key: string]: boolean };
 type TreeNode = {
     label: string;
     left: TreeNode | null;
@@ -22,7 +21,6 @@ const buildTreeJson = (nodes: Node[], edges: Edge[]): TreeNode | null => {
         }
     });
   
-    // Recursive DFS function to build the tree
     const dfs = (nodeId: string | undefined): TreeNode | null => {
       if (!nodeId || !nodeMap.has(nodeId)) return null;
       
@@ -46,8 +44,6 @@ export const SaveDecisionTree = () => {
 
   const handleSave = async () => {
     const treeJson = buildTreeJson(nodes, edges);
-    console.log("Tree JSON:", JSON.stringify(treeJson));
-
     try {
       const response = await axios.post("https://api.example.com/save-decision-tree", treeJson);
       console.log("Data saved successfully:", response.data);
