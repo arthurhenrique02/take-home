@@ -1,32 +1,70 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { graph } from "./Graph";
 import axios from "axios";
+import { Edge, Node } from "reactflow";
 
+type Visited = { [key: string]: boolean };
+type TreeNode = {
+    label: string;
+    left: TreeNode | null;
+    right: TreeNode | null;
+};
 
-export const SaveDecisionTree = () => {
-    const { nodes, edges } = useContext(graph);
+const buildTreeJson = (nodes: Node[], edges: Edge[]): TreeNode | null => {
+    const nodeMap = new Map<string, Node>(nodes.map(node => [node.id, node]));
+
+    // Adjacency list to store the edges in the graph
+    const adjacencyList: Record<string, { False?: string; True?: string }> = {};
+      edges.forEach(({ source, target, label }) => {
+        if (!adjacencyList[source]) adjacencyList[source] = {};
+        if (label === "False" || label === "True") {
+            adjacencyList[source][label as "False" | "True"] = target;
+        }
+    });
   
-    const handleSave = async () => {
-      try {
-        const response = await axios.post("https://api.example.com/save-decision-tree", {
-          nodes,
-          edges,
-        });
-        console.log("Data saved successfully:", response.data);
-      } catch (error) {
-        console.error("Error saving data:", error);
-      }
+    // Recursive DFS function to build the tree
+    const dfs = (nodeId: string | undefined): TreeNode | null => {
+      if (!nodeId || !nodeMap.has(nodeId)) return null;
+      
+      const node = nodeMap.get(nodeId)!;
+      const children = adjacencyList[nodeId] || {};
+  
+      return {
+        label: (node.data as { label?: string })?.label ?? node.id,
+        left: children.False ? dfs(children.False) : null,
+        right: children.True ? dfs(children.True) : null,
+      };
     };
   
-    return (
-        <button
-            onClick={handleSave}
-            className="
-                bg-green-700 text-white rounded-md fixed top-1.5 left-1.5 px-2.5 py-1 z-50
-                hover:bg-green-900 transition-colors duration-200 ease-in-out
-            "
-        >
-            Save Tree
-        </button>
-    );
-  };;
+    // find start node (node after 'start' node)
+    const startNode = edges.find(edge => edge.source === "start")?.target;
+
+    return dfs(startNode);
+  };
+export const SaveDecisionTree = () => {
+  const { nodes, edges } = useContext(graph);
+
+  const handleSave = async () => {
+    const treeJson = buildTreeJson(nodes, edges);
+    console.log("Tree JSON:", JSON.stringify(treeJson));
+
+    try {
+      const response = await axios.post("https://api.example.com/save-decision-tree", treeJson);
+      console.log("Data saved successfully:", response.data);
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleSave}
+      className="
+        bg-green-700 text-white rounded-md fixed top-1.5 left-1.5 px-2.5 py-1 z-50
+        hover:bg-green-900 transition-colors duration-200 ease-in-out
+      "
+    >
+      Save Tree
+    </button>
+  );
+};

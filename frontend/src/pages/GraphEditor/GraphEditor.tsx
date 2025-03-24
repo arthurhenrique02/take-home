@@ -89,8 +89,8 @@ function ReactFlowSandbox() {
 export function GraphEditor() {
   return (
     <EditorProvider>
-      <SaveDecisionTree />
       <GraphProvider>
+        <SaveDecisionTree />
         <ReactFlowSandbox />
       </GraphProvider>
     </EditorProvider>
