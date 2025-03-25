@@ -18,6 +18,9 @@ import {
 } from "reactflow";
 import { editor } from "./Editor";
 import {
+  generateEdge,
+  generateNode,
+  generateUniqueNodeId,
   getNodeDimensions,
   insertNodeAfterEdge,
 } from "./nodeGeneration";
@@ -33,6 +36,13 @@ export type Graph = {
   reactFlowInstance: ReactFlowInstance | null;
   setReactFlowInstance: Dispatch<SetStateAction<ReactFlowInstance | null>>;
   fitZoomToGraph: (reactFlowRef: RefObject<HTMLDivElement>) => void;
+};
+
+export type TreeNode = {
+  label: string;
+  type: string;
+  left: TreeNode | null;
+  right: TreeNode | null;
 };
 
 export const graph = createContext({} as Graph);
@@ -127,3 +137,30 @@ export function GraphProvider({ children }: PropsWithChildren) {
     </graph.Provider>
   );
 }
+
+
+export const loadTree = (treeJson: TreeNode): { nodes: Node[]; edges: Edge[] } => {
+  const nodes: Node[] = [];
+  const edges: Edge[] = [];
+
+  const dfs = (node: TreeNode, parentId?: string, edgeLabel?: string) => {
+    const id = generateUniqueNodeId();
+    nodes.push(generateNode({ nodeName: node.type as NodeName, id, data: { label: node.label } }));
+
+    if (parentId) {
+      edges.push(generateEdge({ source: parentId, target: id, label: edgeLabel }));
+    }
+
+    if (node.left) {
+      dfs(node.left, id, "True");
+    }
+
+    if (node.right) {
+      dfs(node.right, id, "False");
+    }
+  };
+
+  dfs(treeJson);
+
+  return { nodes, edges };
+};

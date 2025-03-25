@@ -1,16 +1,10 @@
 import { useContext } from "react";
-import { graph } from "./Graph";
+import { graph, TreeNode } from "./Graph";
 import axios from "axios";
 import { Edge, Node } from "reactflow";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { positionNodes } from "./positionNodes";
 
-type TreeNode = {
-    label: string;
-    left: TreeNode | null;
-    right: TreeNode | null;
-};
 
 const buildTreeJson = (nodes: Node[], edges: Edge[]): TreeNode | null => {
     const nodeMap = new Map<string, Node>(nodes.map(node => [node.id, node]));
@@ -31,6 +25,7 @@ const buildTreeJson = (nodes: Node[], edges: Edge[]): TreeNode | null => {
 
       return {
         label: (node.data as { label?: string })?.label ?? "",
+        type: (node.type)? node.type : "",
         right: children.False ? dfs(children.False) : null,
         left: children.True ? dfs(children.True) : null,
       };

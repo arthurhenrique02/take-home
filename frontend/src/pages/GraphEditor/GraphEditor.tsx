@@ -9,6 +9,8 @@ import { allNodes } from "./Nodes";
 import { generateEdge, generateNode } from "./nodeGeneration";
 import { positionNodes } from "./positionNodes";
 import { SaveDecisionTree } from "./SaveDecisionTree";
+import axios from "axios";
+import { loadTree } from "./Graph";
 
 const edgeTypes = {
   "add-node": AddNodeEdge,
@@ -49,22 +51,39 @@ function ReactFlowSandbox() {
   }, [tryCenteringGraph]);
 
   useEffect(() => {
-    const initialNodes = [
-      generateNode({ nodeName: "start", id: "start" }),
-      generateNode({ nodeName: "end" }),
-    ];
-    const initialEdges = [
-      generateEdge({
-        source: "start",
-        target: initialNodes[1].id,
-      }),
-    ];
-    const [positionedNodes, positionedEdges] = positionNodes(
-      initialNodes,
-      initialEdges
-    );
-    setNodes(positionedNodes);
-    setEdges(positionedEdges);
+    const fetchTree = async () => {
+      try {
+        const response = await axios.get("http://localhost:80/decision_tree/retrieve");
+        const treeJson = response.data;
+        const { nodes: loadedNodes, edges: loadedEdges } = loadTree(treeJson);
+        loadedNodes.unshift(generateNode({ nodeName: "start", id: "start" }));
+        loadedEdges.unshift(generateEdge({ source: "start", target: loadedNodes[1].id }))
+
+        const [positionedNodes, positionedEdges] = positionNodes(loadedNodes, loadedEdges);
+        setNodes(positionedNodes);
+        setEdges(positionedEdges);
+      } catch (error) {
+        // load default tree if failed to fetch
+        const initialNodes = [
+          generateNode({ nodeName: "start", id: "start" }),
+          generateNode({ nodeName: "end" }),
+        ];
+        const initialEdges = [
+          generateEdge({
+            source: "start",
+            target: initialNodes[1].id,
+          }),
+        ];
+        const [positionedNodes, positionedEdges] = positionNodes(
+          initialNodes,
+          initialEdges
+        );
+        setNodes(positionedNodes);
+        setEdges(positionedEdges);
+    
+      }
+    };
+    fetchTree();
   }, []);
 
   return (
