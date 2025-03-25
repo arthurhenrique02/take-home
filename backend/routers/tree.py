@@ -17,12 +17,12 @@ def retrieve_tree():
 
 
 @router.post("/create_or_update")
-def create_or_update_tree(tree: dict):
+def create_or_update_tree(data: dict):
     tree = DecisionTree.retrieve()
     if tree:
-        tree.tree = tree
+        tree.tree = data
     else:
-        tree = DecisionTree(tree=tree)
+        tree = DecisionTree(tree=data)
     tree.save()
     return tree.tree
 

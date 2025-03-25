@@ -2,6 +2,8 @@ import { useContext } from "react";
 import { graph } from "./Graph";
 import axios from "axios";
 import { Edge, Node } from "reactflow";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 type TreeNode = {
     label: string;
@@ -45,10 +47,10 @@ export const SaveDecisionTree = () => {
   const handleSave = async () => {
     const treeJson = buildTreeJson(nodes, edges);
     try {
-      const response = await axios.post("https://api.example.com/save-decision-tree", treeJson);
-      console.log("Data saved successfully:", response.data);
+      await axios.post("http://localhost:80/decision_tree/create_or_update/", treeJson);
+      toast.success("Tree saved successfully!");
     } catch (error) {
-      console.error("Error saving data:", error);
+      toast.error(`Failed to save tree. ${error}`);
     }
   };
 
