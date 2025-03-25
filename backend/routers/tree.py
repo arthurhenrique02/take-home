@@ -35,8 +35,6 @@ def execute(data: typing.List[typing.Dict]):
     data_as_dict = {item.get("name"): item.get("value") for item in data}
 
     tree = DecisionTree.retrieve()
-    print(data)
-    print(tree)
     if not tree:
         return {"error": "Decision tree not found!"}, 404
 
