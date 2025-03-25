@@ -11,6 +11,7 @@ import { positionNodes } from "./positionNodes";
 import { SaveDecisionTree } from "./SaveDecisionTree";
 import axios from "axios";
 import { loadTree } from "./Graph";
+import { ExecDecisionTree } from "./ExecDecisionTree";
 
 const edgeTypes = {
   "add-node": AddNodeEdge,
@@ -109,7 +110,10 @@ export function GraphEditor() {
   return (
     <EditorProvider>
       <GraphProvider>
-        <SaveDecisionTree />
+        <div className="fixed top-1.5 left-1.5 z-50 flex space-x-2">
+          <ExecDecisionTree />
+          <SaveDecisionTree />
+        </div>
         <ReactFlowSandbox />
       </GraphProvider>
     </EditorProvider>

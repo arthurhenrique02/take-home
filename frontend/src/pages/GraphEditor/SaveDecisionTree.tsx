@@ -53,7 +53,7 @@ export const SaveDecisionTree = () => {
     <button
       onClick={handleSave}
       className="
-        bg-green-700 text-white rounded-md fixed top-1.5 left-1.5 px-2.5 py-1 z-50
+        bg-green-700 text-white rounded-md px-2.5 py-1
         hover:bg-green-900 transition-colors duration-200 ease-in-out
       "
     >
