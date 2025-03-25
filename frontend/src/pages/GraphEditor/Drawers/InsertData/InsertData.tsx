@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { NodeProps } from "reactflow";
 import { ConditionalNodeData } from "../../Nodes/Conditional";
 import { graph } from "../../Graph";
-import { DecisionNodeData } from "../../Nodes/Decision";
+import { EndNodeData } from "../../Nodes/End";
 
 
 type Field = {
@@ -50,7 +50,7 @@ export const insertStartData = () => {
 
   const handleSave = () => {
     localStorage.setItem("fields", JSON.stringify(fields.filter((field) => field.name && field.value)));
-    toast.error("Fields saved successfully!");
+    toast.success("Fields saved successfully!");
   };
 
   return (
@@ -151,6 +151,7 @@ export const insertConditionalData = (
                 />
                 <select
                     className="bg-stone-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    onChange={(e) => handleFieldChange("condition", e.target.value)}
                 >
                     <option value=">">{'>'}</option>
                     <option value="<">{'<'}</option>
@@ -182,7 +183,7 @@ export const insertConditionalData = (
 };
 
 export const insertDecisionData = (
-  node: NodeProps<DecisionNodeData>
+  node: NodeProps<EndNodeData>
 ) => {
   const { drawerVisible, closeEditorDrawer } = useContext(editor);
   const { nodes, setNodes } = useContext(graph);

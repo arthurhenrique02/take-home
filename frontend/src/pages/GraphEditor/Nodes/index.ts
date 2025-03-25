@@ -1,12 +1,10 @@
 import { ConditionalNode } from './Conditional';
-import { DecisionNode } from './Decision';
 import { EndNode } from './End';
 import { StartNode } from './Start';
 
 // Nodes that can manually added by the user to a graph.
 const userAddableNodes = {
   conditional: ConditionalNode,
-  decision: DecisionNode,
 };
 export type UserAddableNodeName = keyof typeof userAddableNodes;
 

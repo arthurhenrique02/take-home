@@ -4,6 +4,7 @@ import axios from "axios";
 import { Edge, Node } from "reactflow";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { positionNodes } from "./positionNodes";
 
 type TreeNode = {
     label: string;
@@ -25,14 +26,13 @@ const buildTreeJson = (nodes: Node[], edges: Edge[]): TreeNode | null => {
   
     const dfs = (nodeId: string | undefined): TreeNode | null => {
       if (!nodeId || !nodeMap.has(nodeId)) return null;
-      
       const node = nodeMap.get(nodeId)!;
       const children = adjacencyList[nodeId] || {};
-  
+
       return {
-        label: (node.data as { label?: string })?.label ?? node.id,
-        left: children.False ? dfs(children.False) : null,
-        right: children.True ? dfs(children.True) : null,
+        label: (node.data as { label?: string })?.label ?? "",
+        right: children.False ? dfs(children.False) : null,
+        left: children.True ? dfs(children.True) : null,
       };
     };
   
