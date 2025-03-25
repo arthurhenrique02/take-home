@@ -12,13 +12,13 @@ router = APIRouter(
 
 @router.get("/retrieve")
 def retrieve_tree():
-    tree = DecisionTree.query.first()
+    tree = DecisionTree.retrieve()
     return tree.tree
 
 
 @router.post("/create_or_update")
 def create_or_update_tree(tree: dict):
-    tree = DecisionTree.query.first()
+    tree = DecisionTree.retrieve()
     if tree:
         tree.tree = tree
     else:
@@ -29,7 +29,7 @@ def create_or_update_tree(tree: dict):
 
 @router.post("/decision")
 def decision(data: dict):
-    tree = DecisionTree.query.first()
+    tree = DecisionTree.retrieve()
 
     if not tree:
         return {"error": "Decision tree not found!"}, 404
