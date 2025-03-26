@@ -42,7 +42,7 @@ export const SaveDecisionTree = () => {
   const handleSave = async () => {
     const treeJson = buildTreeJson(nodes, edges);
     try {
-      await axios.post("http://localhost:80/decision_tree/create_or_update/", treeJson);
+      await axios.post("http://localhost:8000/decision_tree/create_or_update/", treeJson);
       toast.success("Tree saved successfully!");
     } catch (error) {
       toast.error(`Failed to save tree. ${error}`);

@@ -54,7 +54,7 @@ function ReactFlowSandbox() {
   useEffect(() => {
     const fetchTree = async () => {
       try {
-        const response = await axios.get("http://localhost:80/decision_tree/retrieve");
+        const response = await axios.get("http://localhost:8000/decision_tree/retrieve");
         const treeJson = response.data;
         const { nodes: loadedNodes, edges: loadedEdges } = loadTree(treeJson);
         loadedNodes.unshift(generateNode({ nodeName: "start", id: "start" }));
